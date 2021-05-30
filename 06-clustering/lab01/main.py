@@ -72,7 +72,7 @@ def calculate_distance_from_2_groups(group1, group2, dTable, docs=None, method=0
                     dist = dTable[s]
         return dist
 
-    # centroid
+    # dist average
     if method == 2:
         sum = 0.0
         num = 0
@@ -86,7 +86,7 @@ def calculate_distance_from_2_groups(group1, group2, dTable, docs=None, method=0
                 num += 1
         return sum/num
 
-    # average all
+    # group average
     if method == 3:
         sum = 0.0
         num = 0
@@ -120,7 +120,7 @@ def calculate_distance_from_2_groups(group1, group2, dTable, docs=None, method=0
                     num += 1
         return sum/num
 
-    # calculate distance of 2 centers
+    # dist centroid : calculate distance of 2 centers
     if method == 4:
         center1 = calculate_center(group1, docs)
         center2 = calculate_center(group2, docs)
