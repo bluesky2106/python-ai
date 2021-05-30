@@ -46,7 +46,7 @@ def calculate_distance_table(docs):
 # dTable = calculate_distance_table(docs)
 
 def calculate_distance_from_2_groups(group1, group2, dTable, docs=None, method=0):
-    # min distance
+    # single link : min distance
     if method == 0:
         dist = 1.7976931348623157e+308
         for k1 in group1:
@@ -59,11 +59,18 @@ def calculate_distance_from_2_groups(group1, group2, dTable, docs=None, method=0
                     dist = dTable[s]
         return dist
 
-    # calculate distance of 2 centers
+    # complete link : min distance
     if method == 1:
-        center1 = calculate_center(group1, docs)
-        center2 = calculate_center(group2, docs)
-        return np.linalg.norm(center1 - center2)
+        dist = -1.7976931348623157e+308
+        for k1 in group1:
+            for k2 in group2:
+                if k1 < k2:
+                    s = str(k1) + '-' + str(k2)
+                else:
+                    s = str(k2) + '-' + str(k1)
+                if dist < dTable[s]:
+                    dist = dTable[s]
+        return dist
 
     # centroid
     if method == 2:
@@ -113,6 +120,12 @@ def calculate_distance_from_2_groups(group1, group2, dTable, docs=None, method=0
                     num += 1
         return sum/num
 
+    # calculate distance of 2 centers
+    if method == 4:
+        center1 = calculate_center(group1, docs)
+        center2 = calculate_center(group2, docs)
+        return np.linalg.norm(center1 - center2)
+
 
 # dist = calculate_distance_from_2_groups([1,2,3], [4,5,6], dTable)
 # print(dist)
@@ -149,14 +162,17 @@ def grouping(docs, method=0):
         group.append(gi)
         print(group, ':', min_dist)
 
-print("---------- Min Distance ----------")
+print("---------- Single link ----------")
 grouping(docs, 0)
 
-print("---------- Center ----------")
+print("---------- Complete link ----------")
 grouping(docs, 1)
 
-print("---------- Centroid ----------")
+print("---------- Dist Average ----------")
 grouping(docs, 2)
 
-print("---------- Average ----------")
+print("---------- Group Average ----------")
 grouping(docs, 3)
+
+print("---------- Dist Centroid ----------")
+grouping(docs, 4)
