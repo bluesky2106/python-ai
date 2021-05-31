@@ -7,17 +7,14 @@
 # useful for handling different item types with a single interface
 import pymongo
 from itemadapter import ItemAdapter
-
-
-from scrapy import settings
 from scrapy.exceptions import DropItem
 
 class SpyderPipeline:
     def process_item(self, item, spider):
         return item
 
-class StackPipeline:
-    collection_name = 'questions'
+class TuoitrePipeline:
+    collection_name = 'tuoitre'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -44,7 +41,6 @@ class StackPipeline:
                 valid = False
                 raise DropItem("Missing {0}!".format(data))
         if valid:
-            # self.db[self.collection_name].insert_one(ItemAdapter(item).asdict())
-            self.db[self.collection_name].update_one({'url': item['url']}, {'$set': ItemAdapter(item).asdict()}, upsert=True)
+            self.db[self.collection_name].update_one({'content': item['content']}, {'$set': ItemAdapter(item).asdict()}, upsert=True)
         
         return item

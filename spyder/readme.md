@@ -13,6 +13,14 @@ scrapy crawl stack_crawler
 scrapy crawl quotes
 ```
 
+## Tuoi tre
+
+```
+scrapy crawl tuoitre_thethao_crawler
+scrapy crawl tuoitre_congnghe_crawler
+scrapy crawl tuoitre_dulich_crawler
+```
+
 ## References
 
 https://manhhomienbienthuy.github.io/2015/Dec/11/web-scraping-and-crawling-with-scrapy-and-sqlalchemy.html

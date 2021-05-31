@@ -64,11 +64,11 @@ DOWNLOAD_DELAY = 5
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'spyder.pipelines.SpyderPipeline': 300,
-   'spyder.pipelines.StackPipeline': 301,
+   'spyder.pipelines.TuoitrePipeline': 301,
 }
 
 MONGO_URI = "localhost:27017"
-MONGO_DATABASE = "stackoverflow"
+MONGO_DATABASE = "baochi"
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
