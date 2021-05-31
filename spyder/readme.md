@@ -4,6 +4,7 @@
 
 ```
 scrapy crawl stack -o items.json -t json
+scrapy crawl stack_crawler
 ```
 
 ## Quotes
