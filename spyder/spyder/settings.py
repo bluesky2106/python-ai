@@ -62,9 +62,18 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'spyder.pipelines.SpyderPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'spyder.pipelines.SpyderPipeline': 300,
+   'spyder.pipelines.MongoDBPipeline': 301,
+}
+
+MONGO_URI = "localhost:27017"
+MONGO_DATABASE = "stackoverflow"
+
+# MONGODB_SERVER = "localhost"
+# MONGODB_PORT = 27017
+# MONGODB_DB = "stackoverflow"
+# MONGODB_COLLECTION = "questions"
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
