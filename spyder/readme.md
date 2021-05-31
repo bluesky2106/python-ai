@@ -1,0 +1,18 @@
+# Crawler
+
+## Stack
+
+```
+scrapy crawl stack -o items.json -t json
+```
+
+## Quotes
+
+```
+scrapy crawl quotes
+```
+
+## References
+
+https://manhhomienbienthuy.github.io/2015/Dec/11/web-scraping-and-crawling-with-scrapy-and-sqlalchemy.html
+

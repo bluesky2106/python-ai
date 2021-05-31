@@ -51,6 +51,14 @@ For more information, please following below link:
 
 https://doc.scrapy.org/en/latest/intro/install.html
 
+## PyMongo
+
+Install PyMongo with pip:
+
+```
+pip3 install pymongo
+```
+
 ## Rabbitmq
 
 Install rabbitmq by docker:
