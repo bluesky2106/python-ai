@@ -59,6 +59,34 @@ Install PyMongo with pip:
 pip3 install pymongo
 ```
 
+## postgres
+
+```
+docker pull postgres
+```
+
+```
+docker run -d -e POSTGRES_USER=dantrisoft -e POSTGRES_PASSWORD=dantrisoft -e POSTGRES_DB=dantrisoft -v $HOME/postgres:/var/lib/postgresql/data  -p 5432:5432  --restart=always postgres
+```
+
+```
+docker exec -ti NAME_OF_CONTAINER psql -U YOUR_POSTGRES_USERNAME
+```
+
+
+```
+docker run -d \
+    --name some-postgres \
+    -e POSTGRES_PASSWORD=mysecretpassword \
+    -e PGDATA=/var/lib/postgresql/data/pgdata \
+    -v /custom/mount:/var/lib/postgresql/data \
+    postgres
+```
+
+## pgadmin
+
+https://www.pgadmin.org/download/pgadmin-4-macos/
+
 ## Rabbitmq
 
 Install rabbitmq by docker:
@@ -66,3 +94,9 @@ Install rabbitmq by docker:
 ```
 docker pull rabbitmq
 ```
+
+## Useful links
+
+- https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network-to-classify-photos-of-dogs-and-cats/
+- https://aicurious.io/posts/2019-09-23-cac-ham-kich-hoat-activation-function-trong-neural-networks/
+- https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
