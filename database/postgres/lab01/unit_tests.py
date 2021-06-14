@@ -3,6 +3,8 @@ import pytest
 from sqlalchemy import *
 from . import helpers
 
+test_table_name = 'users'
+
 engine = create_engine(
     'postgresql://dantrisoft:dantrisoft@localhost:5432/dantrisoft',
     execution_options={
@@ -15,7 +17,7 @@ engine = create_engine(
     'engine, table_name, columns_dict, expected_boolean',
     [
         pytest.param(
-            engine, 'users',
+            engine, test_table_name,
             {
                 "id": {
                     "data_type": "integer",
@@ -50,8 +52,7 @@ def test_create_new_table(engine, table_name, columns_dict, expected_boolean):
     # test case 2 - check if created table has the correct columns
     assert helpers.get_table_columns(engine, table_name) == expected_column_list
 
-    if expected_boolean:
-        helpers.cleanup_table(engine, table_name)
 
+helpers.cleanup_table(engine, test_table_name)
 
 engine.dispose()

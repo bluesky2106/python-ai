@@ -1,4 +1,5 @@
 from sqlalchemy import *
+from sqlalchemy.dialects.postgresql import insert
 import re
 
 schema = 'test'
@@ -71,3 +72,35 @@ def get_table_columns(engine, table_name):
         for row in conn.execute(query):
             column_list.append(row[0])
         return column_list
+
+def insert_data_into_table(engine, table_name, data, ignore_conflict_fields):
+    """Function that insert bunch of data into table in a postgres database
+    On conflict, do nothing.
+
+    Args:
+        engine: slqalchemy engine
+        table_name: name of the table that we 'll insert data into
+        data : [
+            {
+                "id": 1,
+                "username": "akagi",
+                "email": "akagi@gmail.com"
+            },
+            {
+                "id": 2,
+                "username": "yushin",
+                "email": "yushin@gmail.com"
+            }
+        ]
+        ignore_conflict_fields : ['id', 'date']
+
+    Returns:
+        result of db query execution
+    """
+    with engine.begin() as conn:
+        conn.execute("SET SESSION search_path='%s'" % schema)
+        meta = MetaData()
+        table = Table(table_name, meta, autoload_with=conn)
+        insert_stmt = insert(table).values(data)
+        do_nothing_stmt = insert_stmt.on_conflict_do_nothing(index_elements=ignore_conflict_fields)
+        return conn.execute(do_nothing_stmt, data)
