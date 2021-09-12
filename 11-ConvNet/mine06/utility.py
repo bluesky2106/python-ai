@@ -34,6 +34,7 @@ def draw_bounding_box(image, bbox: List[int], color: Tuple = (0, 255, 0), text: 
         [type]: [description]
     """
     x1, y1, x2, y2 = bbox
+    image = image.copy()
     cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
     if text is not None:
         cv2.putText(image, text, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 1)

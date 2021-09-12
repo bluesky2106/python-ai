@@ -1,9 +1,7 @@
 import cv2 
 import numpy as np
-import mtcnn
 
 import os
-import sys
 import uuid
 from typing import Dict, List, Tuple
 from architecture import InceptionResNetV2
@@ -11,20 +9,9 @@ from sklearn.preprocessing import Normalizer
 import pickle
 from scipy.spatial.distance import cosine
 
-from exception import (
-    InvalidImage,
-    NoNameProvided,
-    NoFaceDetected,
-    FaceMissing,
-    InvalidFaceDetector
-)
-from validator import (
-    is_valid_img,
-    path_exists
-)
-from utility import (
-    draw_bounding_box
-)
+from exception import InvalidFaceDetector
+from validator import path_exists
+from utility import draw_bounding_box
 from face_detection_haar import FaceDetectorHaar
 from face_detection_mtcnn import FaceDetectorMTCNN
 
@@ -65,6 +52,9 @@ class FaceRecognizer:
             raise InvalidFaceDetector
 
         self.conf_threshold = conf_threshold
+
+        if not path_exists(db_loc):
+            os.mkdir(db_loc)
         self.db_loc = db_loc
         
         if not path_exists(encoding_path):
@@ -110,7 +100,6 @@ class FaceRecognizer:
                     try:
                         if len(bboxes) == 1:
                             bbox = bboxes[0]
-                            x1, y1, x2, y2 = bbox
                             img = draw_bounding_box(frame, bbox)
                             cv2.imshow(user_name, img)
                             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -143,7 +132,6 @@ class FaceRecognizer:
         face = cv2.resize(face, self.required_shape)
         face_d = np.expand_dims(face, axis=0)
         encode = self.face_encoder.predict(face_d)[0]
-        print("shape:", encode.shape)
         
         return encode
 
@@ -182,7 +170,7 @@ class FaceRecognizer:
             pickle.dump(encoding_dict, file)
 
     def detect(self, img, encoding_dict):
-        recognition_t = 0.5
+        recognition_t = 0.3
         l2_normalizer = Normalizer('l2')
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         bboxes = self.face_detector.detect_faces(img_rgb, self.conf_threshold)
@@ -207,7 +195,6 @@ class FaceRecognizer:
             encoding_dict = pickle.load(f)
         return encoding_dict
 
-    
 
 if __name__ == "__main__":
     fr = FaceRecognizer()
@@ -234,5 +221,3 @@ if __name__ == "__main__":
         cv2.imshow('camera', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-    
-

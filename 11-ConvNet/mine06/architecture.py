@@ -516,10 +516,3 @@ def InceptionResNetV2():
 	model = Model(inputs, x, name='inception_resnet_v1')
 
 	return model
-
-# Create the FaceNet model
-# face_encoder = InceptionResNetV2()
-
-# # Load the weights of the model
-# path = "facenet_keras_weights.h5"
-# face_encoder.load_weights(path)
