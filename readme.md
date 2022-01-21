@@ -12,7 +12,7 @@ https://stackoverflow.com/questions/38199571/untar-multiple-tar-gz-aa-tar-gz-ab-
 
 Remove the previous archive, if it exists: rm -f ~/workspace.tar.gz && rm  -f ~/work/workspace.tar.gz
 
-Create a zipped archive of your workspace directory: tar -czf ./lab.tar.gz ./W1A1
+Create a zipped archive of your workspace directory: tar -czf ./lab.tar.gz ./W4A2_UGL
 
 Move the archive into the workspace directory so you can see it: mv ~/workspace.tar.gz ~/work/workspace.tar.gz
 

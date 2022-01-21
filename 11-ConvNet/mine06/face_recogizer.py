@@ -1,4 +1,4 @@
-import cv2 
+import cv2
 import numpy as np
 
 import os
@@ -15,6 +15,7 @@ from utility import draw_bounding_box
 from face_detection_haar import FaceDetectorHaar
 from face_detection_mtcnn import FaceDetectorMTCNN
 
+
 class FaceRecognizer:
     """Class for Face Recognizer related methods.
 
@@ -30,7 +31,7 @@ class FaceRecognizer:
         face_detector: str = "mtcnn",
         conf_threshold: float = 0.7,
         db_loc="faces",
-        encoding_path: str = "encodings",  
+        encoding_path: str = "encodings",
     ) -> None:
         """Constructor
 
@@ -56,16 +57,15 @@ class FaceRecognizer:
         if not path_exists(db_loc):
             os.mkdir(db_loc)
         self.db_loc = db_loc
-        
+
         if not path_exists(encoding_path):
             os.mkdir(encoding_path)
         self.encoding_path = encoding_path
 
         self.face_encoder = InceptionResNetV2()
         self.face_encoder.load_weights("facenet_keras_weights.h5")
-        self.required_shape = (160,160)
+        self.required_shape = (160, 160)
 
-        
     def register_face(self, user_name: str, detection_interval: int = 5, num_pictures: int = 100):
         """Register Face
 
@@ -105,7 +105,8 @@ class FaceRecognizer:
                             if cv2.waitKey(1) & 0xFF == ord('q'):
                                 break
 
-                            file_name = os.path.join(path, str(uuid.uuid4()) + ".jpg")
+                            file_name = os.path.join(
+                                path, str(uuid.uuid4()) + ".jpg")
                             cv2.imwrite(file_name, frame)
                             num += 1
                             if num >= num_pictures:
@@ -126,13 +127,13 @@ class FaceRecognizer:
         return (img - mean) / std
 
     def _encode(self, img, bbox):
-        x1, y1, x2, y2  = bbox
-        face = img[y1:y2 , x1:x2]
+        x1, y1, x2, y2 = bbox
+        face = img[y1:y2, x1:x2]
         face = self.normalize(face)
         face = cv2.resize(face, self.required_shape)
         face_d = np.expand_dims(face, axis=0)
         encode = self.face_encoder.predict(face_d)[0]
-        
+
         return encode
 
     def encode(self, encode_name: str = "encodings.pkl"):
@@ -148,7 +149,7 @@ class FaceRecognizer:
         for face_names in os.listdir(self.db_loc):
             person_dir = os.path.join(self.db_loc, face_names)
             for image_name in os.listdir(person_dir):
-                image_path = os.path.join(person_dir,image_name)
+                image_path = os.path.join(person_dir, image_name)
 
                 img_BGR = cv2.imread(image_path)
                 img_RGB = cv2.cvtColor(img_BGR, cv2.COLOR_BGR2RGB)
@@ -162,9 +163,10 @@ class FaceRecognizer:
 
             if encodes:
                 encode = np.sum(encodes, axis=0)
-                encode = l2_normalizer.transform(np.expand_dims(encode, axis=0))[0]
+                encode = l2_normalizer.transform(
+                    np.expand_dims(encode, axis=0))[0]
                 encoding_dict[face_names] = encode
-        
+
         file_path = os.path.join(self.encoding_path, encode_name)
         with open(file_path, 'wb') as file:
             pickle.dump(encoding_dict, file)
@@ -186,8 +188,30 @@ class FaceRecognizer:
                     name = db_name
                     distance = dist
             img = draw_bounding_box(img, bbox, (0, 0, 255), name, (0, 0, 255))
- 
+
         return img
+
+    def detect_name(self, img, encoding_dict):
+        recognition_t = 0.3
+        l2_normalizer = Normalizer('l2')
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        bboxes = self.face_detector.detect_faces(img_rgb, self.conf_threshold)
+        if len(bboxes) != 1:
+            return 'unknown'
+
+        bbox = bboxes[0]
+        encode = self._encode(img, bbox)
+        encode = l2_normalizer.transform(encode.reshape(1, -1))[0]
+
+        name = 'unknown'
+        distance = float("inf")
+        for db_name, db_encode in encoding_dict.items():
+            dist = cosine(db_encode, encode)
+            if dist < recognition_t and dist < distance:
+                name = db_name
+                distance = dist
+
+        return name
 
     def load_pickle(self, encode_name):
         file_path = os.path.join(self.encoding_path, encode_name)
@@ -210,12 +234,12 @@ if __name__ == "__main__":
     encoding_dict = fr.load_pickle(encode_name)
     cap = cv2.VideoCapture(0)
     while cap.isOpened():
-        ret,frame = cap.read()
+        ret, frame = cap.read()
 
         if not ret:
-            print("CAM NOT OPEN") 
+            print("CAM NOT OPEN")
             break
-        
+
         frame = fr.detect(frame, encoding_dict)
 
         cv2.imshow('camera', frame)
